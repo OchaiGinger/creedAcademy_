@@ -1,9 +1,9 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { env } from "process";
-import z, { size } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3 } from "@/lib/S3Client";
+import z from "zod";
 
 export const fileUploadSchema = z.object({
   fileName: z.string().min(1, { message: "Filename is required" }),
