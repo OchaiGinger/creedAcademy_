@@ -1,26 +1,113 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider   = "prisma-client-js"
+  output     = "../src/generated/prisma"
+  engineType = "binary"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+// 1. Define the Roles
+enum Role {
+  USER
+  INSTRUCTOR
+  ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum AccountStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum TrainingMode {
+  ONLINE
+  PHYSICAL
+  HYBRID
+}
+
+enum StudentCategory {
+  REGULAR
+  INTERNSHIP
+  SCHOLARSHIP
+  AFFILIATE
+}
+
+// 2. Update User to track their Role
 model User {
-  id            String      @id
+  id            String  @id
   name          String
   email         String
-  emailVerified Boolean     @default(false)
+  emailVerified Boolean @default(false)
   image         String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  instructor    Instructor?
+  role          Role    @default(USER) // Everyone starts as USER unless upgraded
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions Session[]
+  accounts Account[]
+
+  // Back-relation to Instructor (optional)
+  instructor Instructor?
+  student    Student?
 
   @@unique([email])
   @@map("user")
+}
+
+model Student {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  registrationNumber String? @unique // Admin fills this later
+
+  firstName   String
+  middleName  String?
+  lastName    String
+  gender      Gender
+  dateOfBirth DateTime
+  phone       String
+
+  nationality   String
+  stateOfOrigin String
+  lga           String
+  address       String
+
+  category     StudentCategory @default(REGULAR)
+  trainingMode TrainingMode    @default(PHYSICAL)
+
+  ninNumber         String        @unique
+  passportPhotoPath String
+  status            AccountStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+}
+
+// 3. Update Instructor to support "Invitations"
+model Instructor {
+  id String @id @default(uuid())
+
+  // The email is the link between the Invite and the User
+  email String @unique
+
+  // Link to User is OPTIONAL (nullable) because the user might not exist yet!
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
+  bio     String?
+  courses Course[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Session {
@@ -80,7 +167,7 @@ enum CourseLevel {
 enum CourseStatus {
   DRAFT
   PUBLISHED
-  ARCHIVE
+  ARCHIVED
 }
 
 model Course {
@@ -91,35 +178,55 @@ model Course {
   title       String
   description String
   fileKey     String
-  price       Float
+  price       Int
   duration    Int
   level       CourseLevel @default(BEGINNER)
 
   category         String
   smallDescription String
-  // category         Category? @relation(fields: [categoryId], references: [id])
   slug             String @unique
 
-  status    CourseStatus @default(DRAFT)
-  // chapters    Chapter[]
-  // attachments Attachment[]
-  // createdAt   DateTime     @default(now())
-  // updatedAt   DateTime     @updatedAt
-  // attachments Attachment[]
-  // chapters    Chapter[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  status   CourseStatus @default(DRAFT)
+  chapters Chapter[]
 
-  // @@index([categoryId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([instructorId])
   @@index([title])
 }
 
-model Instructor {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bio       String?
-  courses   Course[]
+model Chapter {
+  id String @id @default(uuid())
+
+  title       String
+  description String?
+  videoUrl    String?
+  position    Int
+
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons  Lesson[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Lesson {
+  id String @id @default(uuid())
+
+  title        String
+  description  String?
+  position     Int
+  thumbnailKey String?
+  videoKey     String?
+
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chapterId])
+  @@index([title])
 }

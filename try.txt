@@ -355,3 +355,62 @@ model PaypalOrder {
   @@unique([userId, courseId])
   @@index([courseId])
 }
+
+
+
+
+
+
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Course {
+  id           String     @id @default(uuid())
+  instructorId String
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+
+  title       String
+  description String
+  fileKey     String
+  price       Float
+  duration    Int
+  level       CourseLevel @default(BEGINNER)
+
+  category         String
+  smallDescription String
+  // category         Category? @relation(fields: [categoryId], references: [id])
+  slug             String @unique
+
+  status    CourseStatus @default(DRAFT)
+  // chapters    Chapter[]
+  // attachments Attachment[]
+  // createdAt   DateTime     @default(now())
+  // updatedAt   DateTime     @updatedAt
+  // attachments Attachment[]
+  // chapters    Chapter[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  // @@index([categoryId])
+  @@index([title])
+}
+
+model Instructor {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio       String?
+  courses   Course[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

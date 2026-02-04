@@ -7,9 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowLeftIcon, PlusIcon, SparkleIcon } from "lucide-react";
+import { ArrowLeftIcon, Loader2, PlusIcon, SparkleIcon } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -42,8 +42,15 @@ import {
 } from "@/components/ui/select";
 import RichTextEditor from "@/components/rich-text-editor/Editor";
 import { Uploader } from "@/components/file-upload/uploader";
+import { CreateCourse } from "./action";
+import { tryCatch } from "@/hooks/try-catch";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const CreateCoursePage = () => {
+  const [ispending, startTransition] = useTransition();
+  const router = useRouter();
+
   const form = useForm<CourseSchemaType>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
@@ -52,7 +59,7 @@ const CreateCoursePage = () => {
       fileKey: "",
       price: 0,
       duration: 0,
-      level: "Beginner",
+      level: "BEGINNER",
       smallDescription: "",
       slug: "",
       category: "Business",
@@ -61,7 +68,21 @@ const CreateCoursePage = () => {
   });
 
   const onSubmit: SubmitHandler<CourseSchemaType> = (values) => {
-    console.log(values);
+    startTransition(async () => {
+      const { data: result, error } = await tryCatch(CreateCourse(values));
+      if (error) {
+        toast.error("Error creating course:");
+        return;
+      }
+
+      if (result.status == "success") {
+        toast.success(result.message);
+        form.reset();
+        router.push("/instructor/courses");
+      } else if (result.status == "error") {
+        toast.error(result.message);
+      }
+    });
   };
   return (
     <>
@@ -295,8 +316,21 @@ const CreateCoursePage = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">
-                Create Course <PlusIcon className="ml-2 h-4 w-4" />{" "}
+              <Button type="submit" disabled={ispending}>
+                {ispending ? (
+                  <>
+                    Creating...
+                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    Create Course{" "}
+                    <PlusIcon
+                      className="ml-2 h-4 w-4"
+                      onClick={form.handleSubmit(onSubmit)}
+                    />
+                  </>
+                )}
               </Button>
             </form>
           </Form>

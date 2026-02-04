@@ -68,6 +68,7 @@ export function RenderUploadedState({
         disabled={isDeleting}
         variant="destructive"
         className={cn("absolute top-4 right-4")}
+        type="button"
       >
         {isDeleting ? (
           <Loader2 className="size-2 animate-spin" />

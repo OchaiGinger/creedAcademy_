@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   IconCamera,
@@ -10,13 +10,13 @@ import {
   IconHelp,
   IconSearch,
   IconSettings,
-  IconUsers
-} from "@tabler/icons-react"
-import * as React from "react"
+  IconUsers,
+} from "@tabler/icons-react";
+import * as React from "react";
 
-import { NavMain } from "@/components/sidebar/nav-main"
-import { NavSecondary } from "@/components/sidebar/nav-secondary"
-import { NavUser } from "@/components/sidebar/nav-user"
+import { NavMain } from "@/components/sidebar/nav-main";
+import { NavSecondary } from "@/components/sidebar/nav-secondary";
+import { NavUser } from "@/components/sidebar/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -25,11 +25,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import Link from "next/link"
+} from "@/components/ui/sidebar";
+import Link from "next/link";
 
 const data = {
-
   navMain: [
     {
       title: "Dashboard",
@@ -118,8 +117,7 @@ const data = {
       icon: IconSearch,
     },
   ],
-
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -133,7 +131,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <Link href="/" className="flex items-center gap-2">
                 <img
-                  src="logo.svg"
+                  src="/logo.svg"
                   alt="KeekInstitute Logo"
                   width={24}
                   height={24}
@@ -154,5 +152,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

@@ -1,16 +1,22 @@
+import { requireInstructor } from "@/app/data/instructor/require-admin";
 import { env } from "@/lib/env";
 import { s3 } from "@/lib/S3Client";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { NextResponse } from "next/server";
 
+// Force this route to be dynamic
+export const dynamic = "force-dynamic";
+
 export async function DELETE(request: Request) {
+  const session = await requireInstructor();
+
   try {
     const body = await request.json();
     const key = body.key;
 
     if (!key) {
       return NextResponse.json(
-        { error: "Mission or invalid object key" },
+        { error: "Missing or invalid object key" },
         { status: 400 },
       );
     }
@@ -22,11 +28,12 @@ export async function DELETE(request: Request) {
 
     await s3.send(command);
 
+    return NextResponse.json({ message: "File deleted successfully" });
+  } catch (error: any) {
+    console.error("S3 Delete Error:", error);
     return NextResponse.json(
-      {
-        message: "File deleted successfuly",
-      },
-      { status: 200 },
+      { error: error.message || "Failed to delete object" },
+      { status: 500 },
     );
-  } catch (error) {}
+  }
 }

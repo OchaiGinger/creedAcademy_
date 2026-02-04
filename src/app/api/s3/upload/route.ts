@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3 } from "@/lib/S3Client";
 import z from "zod";
+import { requireInstructor } from "@/app/data/instructor/require-admin";
 
 export const fileUploadSchema = z.object({
   fileName: z.string().min(1, { message: "Filename is required" }),
@@ -15,6 +16,8 @@ export const fileUploadSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const session = await requireInstructor();
+
   try {
     const body = await req.json();
     const validation = fileUploadSchema.safeParse(body);

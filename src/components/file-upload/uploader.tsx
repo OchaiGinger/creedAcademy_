@@ -12,6 +12,7 @@ import {
 } from "./RenderState";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { useConstructUrl } from "@/hooks/use-construct";
 
 interface uploaderProps {
   id: string | null;
@@ -31,6 +32,8 @@ interface iAppProps {
 }
 
 export function Uploader({ onChange, value }: iAppProps) {
+  const fileUrl = useConstructUrl(value || "");
+
   const [files, setFiles] = React.useState<uploaderProps>({
     id: null,
     file: null,
@@ -38,7 +41,7 @@ export function Uploader({ onChange, value }: iAppProps) {
     progress: 0,
     isDeleting: false,
     error: false,
-    objectUrl: undefined,
+    objectUrl: fileUrl,
     fileType: "image",
     key: value,
   });
@@ -164,7 +167,7 @@ export function Uploader({ onChange, value }: iAppProps) {
         });
 
         if (!response.ok) {
-          toast.error("Failed to remove fiel from storage");
+          toast.error("Failed to remove file from storage");
           setFiles((prev) => ({
             ...prev,
             isDeleting: true,
