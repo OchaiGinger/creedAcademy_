@@ -44,7 +44,7 @@ export function AppSidebar({ navData, ...props }: AppSidebarProps) {
               <Link href="/" className="flex items-center gap-3">
                 <img src="/logo.svg" alt="Logo" className="size-9" />
                 <div className="flex flex-col leading-tight">
-                  <span className="font-bold">Creed Academy</span>
+                  <span className="font-bold">Keek Institute</span>
                 </div>
               </Link>
             </SidebarMenuButton>

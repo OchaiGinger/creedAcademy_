@@ -165,7 +165,7 @@ export const SignInForm = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="REG-2024-XXXX"
+                        placeholder="REG-2024-XXXdX"
                         className="h-11 bg-slate-50 border-slate-200"
                         {...field}
                       />
@@ -187,8 +187,8 @@ export const SignInForm = () => {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="••••••••"
-                      className="h-11 bg-slate-50 border-slate-200"
+                      placeholder="********"
+                      className="h-11 border-slate-200"
                       {...field}
                     />
                   </FormControl>

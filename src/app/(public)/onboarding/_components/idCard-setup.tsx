@@ -14,7 +14,7 @@ export default function IDCardStep({ student, photoKey, onNext }: any) {
         <div>
           <h2 className="text-2xl font-bold mb-4">Your Digital Identity</h2>
           <p className="text-slate-600 mb-6 leading-relaxed">
-            Congratulations! You are officially a Creed Academy student. Below
+            Congratulations! You are officially a Keek Institute student. Below
             is your secure digital ID card.
           </p>
           <div className="space-y-4">
@@ -40,7 +40,7 @@ export default function IDCardStep({ student, photoKey, onNext }: any) {
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-bold text-lg tracking-wider">
-                  Creed Academy
+                  Keek Institute
                 </h3>
                 <p className="text-[10px] text-slate-300 uppercase tracking-widest">
                   Student Identification

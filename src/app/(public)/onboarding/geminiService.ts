@@ -19,7 +19,7 @@ export async function evaluateAssessment(answers: Record<number, string>) {
 
     // 3. Construct a professional prompt to ensure valid JSON output
     const prompt = `
-      You are an expert career counselor at Creed Academy. 
+      You are an expert career counselor at Keek Institute. 
       Based on the following student assessment answers: ${JSON.stringify(answers)}
       
       Compare these against the following question context: ${JSON.stringify(ASSESSMENT_QUESTIONS)}
