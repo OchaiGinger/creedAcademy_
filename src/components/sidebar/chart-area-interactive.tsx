@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import {
   Card,
@@ -22,12 +23,26 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-// Accept data as a prop
-export function ChartAreaInteractive({
-  data,
-}: {
-  data: { date: string; enrollment: number }[];
-}) {
+interface ChartData {
+  date: string;
+  enrollment: number;
+}
+
+export function ChartAreaInteractive({ data }: { data: ChartData[] }) {
+  // 1. Prevent Hydration/Hanging issues by ensuring we are on the client
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    // Return a placeholder with the same height to prevent layout shift
+    return (
+      <div className="h-100 w-full bg-muted/20 animate-pulse rounded-xl" />
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -39,7 +54,7 @@ export function ChartAreaInteractive({
 
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
-          // Use a standard min-height to ensure rendering
+          // 2. Changed h-75 to a standard Tailwind height h-[300px]
           className="aspect-auto h-75 w-full"
           config={chartConfig}
         >
@@ -57,6 +72,8 @@ export function ChartAreaInteractive({
               minTickGap={32}
               tickFormatter={(value) => {
                 const date = new Date(value);
+                // 3. Safety check for invalid dates
+                if (isNaN(date.getTime())) return "";
                 return date.toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -68,7 +85,9 @@ export function ChartAreaInteractive({
                 <ChartTooltipContent
                   className="w-40"
                   labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
+                    const date = new Date(value);
+                    if (isNaN(date.getTime())) return "";
+                    return date.toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",

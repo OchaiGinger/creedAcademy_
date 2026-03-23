@@ -15,13 +15,13 @@ export default function SignInPage() {
           <div className="bg-radial from-blue-500 to-blue-900 relative hidden md:flex flex-col items-center justify-center gap-y-4 ">
             <Image
               src="/logo.svg"
-              alt="creed academy logo"
+              alt="keek institute logo"
               width={92}
               height={92}
               className="h-23 w-23"
             />
 
-            <p className="text-2xl font-bold text-white">creed academy</p>
+            <p className="text-2xl font-bold text-white">keek institute</p>
           </div>
         </CardContent>
       </Card>

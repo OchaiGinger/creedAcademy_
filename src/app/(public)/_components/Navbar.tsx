@@ -17,12 +17,12 @@ export function Navbar() {
         <Link href="/" className="flex items-center gap-2 mr-4">
           <Image
             src="logo.svg"
-            alt="creed academy Logo"
+            alt="keek institute Logo"
             width={24}
             height={24}
             className="size-9"
           />
-          <span className="font-bold">creed academy</span>
+          <span className="font-bold">keek institute</span>
         </Link>
 
         {/* Desktop Navigation */}
