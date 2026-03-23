@@ -32,7 +32,7 @@ export default async function InstructorPage() {
   return (
     <div className="space-y-6 p-6">
       <SectionCards />
-      <ChartAreaInteractive data={formattedChartData} />
+      {/* <ChartAreaInteractive data={formattedChartData} /> */}
     </div>
   );
 }

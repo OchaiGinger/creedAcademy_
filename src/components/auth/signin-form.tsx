@@ -78,7 +78,7 @@ export const SignInForm = () => {
       if (role === "ADMIN") {
         router.push("/admin");
       } else if (role === "INSTRUCTOR") {
-        router.push("/instructor");
+        router.push("/instructor/dashboard");
       } else {
         // It's a Student (Role: USER)
         // We need to check the 'onboardedBy' field from the Student model
